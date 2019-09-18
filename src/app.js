@@ -20,16 +20,14 @@ const partialsPath = path.join(__dirname, '../views/partials');
 hbs.registerPartials(partialsPath);
 
 // Routes
-app.get('', (req, res) => {
-  res.render('index', { title: 'Weather App', version: 1.0, by: 'Hamad adel' });
-});
+app.get('', (req, res) => res.render('index'));
 
 app.get('/weather', (req, res) => {
   const address = req.query.address;
   if (!address)
     return res.send({ error: 'you must provide your address' });
 
-  geocode(address, (error, { latitude, longitude, location }) => {
+  geocode(address, (error, { latitude, longitude, location } = {}) => {
     if (error)
       return res.send({ error });
     forecast(latitude, longitude, 'en', (forecastError, forecast) => {
@@ -39,6 +37,7 @@ app.get('/weather', (req, res) => {
     })
   });
 });
+app.get('*', (req, res) => res.render('404'));
 
 // Trigger the server
 app.listen(3000, () => console.log('Server is up on port 3000'));
